@@ -28,7 +28,7 @@ interface IUsdtSwapPool {
 
     function getReserves() external view returns (uint112 _reserve, uint112 _sold, uint32 _swapAccountsCount);
 
-    function initialize(address _owner, address _usdt, address _token, uint256 _price, uint256 _maxOutLock) external;
+    function initialize(address _owner, address _usdt, address _token) external;
 
     function swap(uint256 _tokenOut, address _to) external;
 }

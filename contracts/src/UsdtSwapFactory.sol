@@ -23,7 +23,7 @@ contract UsdtSwapFactory is IUsdtSwapFactory {
         return allPools.length;
     }
 
-    function createPool(address _token, uint256 _price, uint256 _maxOutLock) external returns (address pool) {
+    function createPool(address _token) external returns (address pool) {
         require(_token != address(0), "ZERO_ADDRESS");
         require(getPool[msg.sender][_token] == address(0), "POOL_EXISTS");
         bytes memory bytecode = type(UsdtSwapPool).creationCode;
@@ -31,7 +31,7 @@ contract UsdtSwapFactory is IUsdtSwapFactory {
         assembly {
             pool := create2(0, add(bytecode, 32), mload(bytecode), salt)
         }
-        IUsdtSwapPool(pool).initialize(msg.sender, USDT, _token, _price, _maxOutLock);
+        IUsdtSwapPool(pool).initialize(msg.sender, USDT, _token);
         getPool[msg.sender][_token] = pool;
         allPools.push(pool);
         emit PoolCreated(msg.sender, _token, pool, allPools.length);

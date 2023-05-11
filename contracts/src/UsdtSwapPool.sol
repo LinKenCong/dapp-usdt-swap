@@ -43,13 +43,11 @@ contract UsdtSwapPool is IUsdtSwapPool {
         factory = msg.sender;
     }
 
-    function initialize(address _owner, address _usdt, address _token, uint256 _price, uint256 _maxOutLock) external {
+    function initialize(address _owner, address _usdt, address _token) external {
         require(msg.sender == factory, "FORBIDDEN");
         owner = _owner;
         usdt = _usdt;
         token = _token;
-        price = uint112(_price);
-        maxOutLock = uint112(_maxOutLock);
     }
 
     function getReserves() public view returns (uint112 _reserve, uint112 _sold, uint32 _swapAccountsCount) {
@@ -118,10 +116,3 @@ contract UsdtSwapPool is IUsdtSwapPool {
         owner = _newOwner;
     }
 }
-
-/**
-Todo
-
-重新构思关于 maxOutLock 和 price 是否需要增加多阶段功能
-
- */
