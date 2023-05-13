@@ -1,9 +1,77 @@
 .page {
-  box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(0, 0, 0, 0.03);
   border-radius: 0.3rem;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   min-height: 30rem;
+}
+
+.button {
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.25rem;
+  background-color: #f5f5f7;
+  color: #333;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+}
+.button:hover {
+  background-color: #e5e5e7;
+}
+.button:active {
+  background-color: #d5d5d7;
+}
+.button:disabled {
+  background-color: #f5f5f7;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.button_default {
+  border: 1px solid #d5d5d7;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.button_primary {
+  border: 1px solid #007aff;
+  background-color: #007aff;
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.button_primary:hover {
+  background-color: #0065d1;
+}
+.button_primary:active {
+  background-color: #0056b3;
+}
+
+.button_danger {
+  border: 1px solid #ff3b30;
+  background-color: #ff3b30;
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.button_danger:hover {
+  background-color: #ca2017;
+}
+.button_danger:active {
+  background-color: #b01e16;
+}
+
+.button_back {
+  border: 1px solid #282828;
+  background-color: #383838;
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.button_back:hover {
+  background-color: #4e4e4e;
+}
+.button_back:active {
+  background-color: #2e2e2e;
 }

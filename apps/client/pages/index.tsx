@@ -1,12 +1,15 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.scss";
+import commonSty from "../styles/common.module.scss";
 
 /** components */
 import Footer from "../components/Footer";
 import InfoCard from "../components/InfoCard";
 import NavList from "../components/NavList";
+import ContentLayout from "../components/ContentLayout";
 import SwapPage from "../components/SwapPage";
+import SellPage from "../components/SellPage";
 
 const Home: NextPage = () => {
   return (
@@ -26,8 +29,10 @@ const Home: NextPage = () => {
               <NavList />
             </div>
             {/* Content */}
-            <div className={styles.content}>
-              <SwapPage />
+            <div className={`${commonSty.page} ${styles.content}`}>
+              <ContentLayout title="Sell" back="">
+                <SellPage />
+              </ContentLayout>
             </div>
           </div>
         </div>
