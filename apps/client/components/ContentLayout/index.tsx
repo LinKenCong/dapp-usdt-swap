@@ -4,17 +4,21 @@ import React, { ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
-  title: string;
-  back: string;
+  contentConfig: {
+    title: string;
+    back: string;
+  };
 }
 
-const ContentLayout = ({ children, title, back }: Props) => {
+const ContentLayout = ({ children, contentConfig }: Props) => {
   return (
     <>
       <section className={sty.ContentLayout}>
         <div className={sty.header}>
-          {back && <button className={`${commonSty.button} ${commonSty.button_back} ${sty.btn}`}>Back</button>}
-          <h1 className={sty.title}>{title}</h1>
+          {contentConfig.back && (
+            <button className={`${commonSty.button} ${commonSty.button_back} ${sty.btn}`}>Back</button>
+          )}
+          <h1 className={sty.title}>{contentConfig.title}</h1>
         </div>
         <div className={sty.content}>
           <article className={sty.children}>{children}</article>
