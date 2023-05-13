@@ -1,0 +1,44 @@
+.container {
+  padding: 0 1rem;
+}
+
+.main {
+  padding: 5rem 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #f5f5f5;
+}
+
+.grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1000px;
+}
+.outerLayer {
+  flex: 1;
+  width: 100%;
+  display: flex;
+}
+.sider {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+}
+.content {
+  margin-left: 1rem;
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+  .grid {
+    width: 100%;
+    flex-direction: column;
+  }
+}
