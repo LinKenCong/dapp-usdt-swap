@@ -11,18 +11,18 @@ const pageConfig: PageConfig = {
 };
 
 const contentConfig: ContentConfig = {
-  title: "HOME",
+  title: "Sell",
   back: "",
 };
 
-const Home: NextPage = () => {
+const Sell: NextPage = () => {
   return (
     <PageLayout pageConfig={pageConfig}>
       <ContentLayout contentConfig={contentConfig}>
-        <div>HOME</div>
+        <div>Sell</div>
       </ContentLayout>
     </PageLayout>
   );
 };
 
-export default Home;
+export default Sell;

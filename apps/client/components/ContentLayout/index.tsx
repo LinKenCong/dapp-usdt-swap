@@ -1,13 +1,11 @@
 import sty from "./style.module.scss";
 import commonSty from "../../styles/common.module.scss";
 import React, { ReactNode } from "react";
+import { ContentConfig } from "../../constants/type";
 
 interface Props {
   children: ReactNode;
-  contentConfig: {
-    title: string;
-    back: string;
-  };
+  contentConfig: ContentConfig;
 }
 
 const ContentLayout = ({ children, contentConfig }: Props) => {

@@ -2,6 +2,7 @@ import Head from "next/head";
 import React, { ReactNode } from "react";
 import sty from "./style.module.scss";
 import commonSty from "../../styles/common.module.scss";
+import { PageConfig } from "../../constants/type";
 
 /** components */
 import Footer from "../Footer";
@@ -10,10 +11,7 @@ import NavList from "../NavList";
 
 interface Props {
   children: ReactNode;
-  pageConfig: {
-    title: string;
-    description: string;
-  };
+  pageConfig: PageConfig;
 }
 
 const PageLayout = ({ children, pageConfig }: Props) => {
