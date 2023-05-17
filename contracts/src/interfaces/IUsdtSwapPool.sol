@@ -2,8 +2,6 @@
 pragma solidity ^0.8.19;
 
 interface IUsdtSwapPool {
-    event Sync(uint112 reserve, uint112 sold);
-
     event Swap(address indexed sender, uint256 usdtIn, uint256 tokenOut, address indexed to);
 
     event AddReserve(address indexed _owner, uint256 _amount);
@@ -26,7 +24,9 @@ interface IUsdtSwapPool {
 
     function price() external view returns (uint112);
 
-    function getReserves() external view returns (uint112 _reserve, uint112 _sold, uint32 _swapAccountsCount);
+    function swapAccountsCount() external view returns (uint256);
+
+    function getReserves() external view returns (uint256 _reserve, uint256 _sold);
 
     function initialize(address _owner, address _usdt, address _token) external;
 

@@ -13,12 +13,4 @@ interface IUsdtSwapFactory {
     function getPool(address _owner, address _token) external view returns (address pool);
 
     function createPool(address _token) external returns (address pool);
-
-    function feeTo() external view returns (address);
-
-    function fee() external view returns (uint256);
-
-    function setFeeTo(address _feeTo) external;
-
-    function setFee(uint256 _fee) external;
 }
