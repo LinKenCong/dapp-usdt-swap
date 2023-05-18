@@ -10,7 +10,7 @@ const InfoCard = () => {
           <div className={sty.titlePart}></div>
         </div>
         <div className={sty.userInfo}>
-          <ConnectButton accountStatus="address" chainStatus="none" showBalance={false} />
+          <ConnectButton accountStatus="address" chainStatus="icon" showBalance={false} />
         </div>
       </div>
     </>
