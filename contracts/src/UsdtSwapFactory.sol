@@ -2,7 +2,6 @@
 pragma solidity ^0.8.19;
 
 import "./interfaces/IUsdtSwapFactory.sol";
-import "./interfaces/IUsdtSwapPool.sol";
 import "./UsdtSwapPool.sol";
 
 /**
@@ -45,7 +44,7 @@ contract UsdtSwapFactory is IUsdtSwapFactory {
         assembly {
             pool := create2(0, add(bytecode, 32), mload(bytecode), salt)
         }
-        IUsdtSwapPool(pool).initialize(msg.sender, USDT, _token);
+        UsdtSwapPool(pool).initialize(msg.sender, USDT, _token);
         getPool[msg.sender][_token] = pool;
         allPools.push(pool);
         emit PoolCreated(msg.sender, _token, pool, allPools.length);

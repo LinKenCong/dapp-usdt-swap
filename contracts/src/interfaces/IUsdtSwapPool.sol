@@ -4,9 +4,7 @@ pragma solidity ^0.8.19;
 interface IUsdtSwapPool {
     event Swap(address indexed sender, uint256 usdtIn, uint256 tokenOut, address indexed to);
 
-    event AddReserve(address indexed _owner, uint256 _amount);
-
-    event SubReserve(address indexed _owner, uint256 _amount, address indexed to);
+    event SubReserve(address indexed owner, uint256 amount, address indexed to);
 
     function owner() external view returns (address owner);
 
@@ -26,9 +24,19 @@ interface IUsdtSwapPool {
 
     function swapAccountsCount() external view returns (uint256);
 
-    function getReserves() external view returns (uint256 _reserve, uint256 _sold);
+    function getReserves() external view returns (uint256 reserve, uint256 sold);
 
-    function initialize(address _owner, address _usdt, address _token) external;
+    function getUsdtIn(uint256 tokenOut) external view returns (uint256 usdtIn);
 
-    function swap(uint256 _tokenOut, address _to) external;
+    function purchasableTokens() external view returns (uint256 purchasable);
+
+    function swap(uint256 tokenOut, address to) external;
+
+    function subReserve(uint256 amount, address to) external;
+
+    function setPrice(uint112 newPrice) external;
+
+    function setMaxOutLock(uint112 newMaxOut) external;
+
+    function setNewOwner(address newOwner) external;
 }

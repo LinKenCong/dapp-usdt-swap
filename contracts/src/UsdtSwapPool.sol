@@ -81,8 +81,7 @@ contract UsdtSwapPool is IUsdtSwapPool, ReentrancyGuard {
      * @return usdtIn The amount of USDT required to purchase the tokens.
      */
     function getUsdtIn(uint256 _tokenOut) public view returns (uint256 usdtIn) {
-        uint112 _price = price;
-        usdtIn = _price == 0 ? _tokenOut : _tokenOut.mul(_price).div(1e18);
+        usdtIn = _tokenOut.mul(price).div(1e18);
     }
 
     /**
@@ -93,10 +92,12 @@ contract UsdtSwapPool is IUsdtSwapPool, ReentrancyGuard {
     function swap(uint256 _tokenOut, address _to) external nonReentrant {
         require(_tokenOut > 0, "ZERO_AMOUNT");
         require(_to != address(0), "ZERO_ADDRESS");
+        require(price > 0, "ZERO_PRICE");
         uint256 _purchasable = purchasableTokens();
         require(_purchasable >= _tokenOut, "INSUFFICIENT_AVAILABLE_PURCHASE");
         uint256 _usdtIn = getUsdtIn(_tokenOut);
-        require(IERC20(usdt).balanceOf(msg.sender) > _usdtIn, "INSUFFICIENT_AVAILABLE_USDT");
+        require(IERC20(usdt).balanceOf(msg.sender) >= _usdtIn, "INSUFFICIENT_AVAILABLE_USDT");
+        require(IERC20(usdt).allowance(msg.sender, address(this)) >= _usdtIn, "INSUFFICIENT_APPROVE_USDT");
         swapCountOf[msg.sender] = swapCountOf[msg.sender].add(_tokenOut);
         totalSwap = totalSwap.add(_tokenOut);
         sold = sold.add(_tokenOut);
