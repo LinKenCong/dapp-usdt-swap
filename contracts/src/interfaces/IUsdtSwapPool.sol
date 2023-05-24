@@ -24,7 +24,7 @@ interface IUsdtSwapPool {
 
     function swapAccountsCount() external view returns (uint256);
 
-    function getReserves() external view returns (uint256 reserve, uint256 sold);
+    function sold() external view returns (uint256);
 
     function getUsdtIn(uint256 tokenOut) external view returns (uint256 usdtIn);
 

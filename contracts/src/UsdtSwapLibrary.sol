@@ -2,6 +2,7 @@
 pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./interfaces/IUsdtSwapPool.sol";
 
@@ -18,7 +19,9 @@ library UsdtSwapLibrary {
      * @return purchasable The amount of tokens that can be purchased.
      */
     function purchasableTokens(address _pool) public view returns (uint256 purchasable) {
-        (uint256 _reserve, uint256 _sold) = IUsdtSwapPool(_pool).getReserves();
+        // (uint256 _reserve, uint256 _sold) = IUsdtSwapPool(_pool).getReserves();
+        uint256 _reserve = IERC20(address(IUsdtSwapPool(_pool).token())).balanceOf(_pool);
+        uint256 _sold = IUsdtSwapPool(_pool).sold();
         uint256 _maxOutLock = uint256(IUsdtSwapPool(_pool).maxOutLock());
         uint256 _limit = _maxOutLock <= _reserve ? _maxOutLock : _reserve;
         purchasable = _sold >= _limit ? 0 : _limit.sub(_sold);

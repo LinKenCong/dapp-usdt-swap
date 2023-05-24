@@ -14,6 +14,9 @@ const config: HardhatUserConfig = {
     tokenOwner: 1,
   },
   networks: {
+    hardhat: {
+      chainId: 1337,
+    },
     testnet: {
       url: node_url("bsc_test"),
       // accounts: accounts("bsc_test"),

@@ -25,14 +25,11 @@ contract UsdtSwapPool is IUsdtSwapPool, ReentrancyGuard {
     // user => swap token
     mapping(address => uint256) public swapCountOf;
     uint256 public totalSwap;
-
-    uint256 private sold;
+    uint256 public swapAccountsCount;
+    uint256 public sold;
 
     uint112 public maxOutLock;
     uint112 public price;
-    uint256 public swapAccountsCount;
-
-    /** ---- CONSTRUCTOR ---- */
 
     /**
      * @dev Initializes the contract with the address of the factory contract.
@@ -55,21 +52,12 @@ contract UsdtSwapPool is IUsdtSwapPool, ReentrancyGuard {
     }
 
     /**
-     * @dev Gets the current reserves and sold amount of the token.
-     * @return _reserve The current reserve amount of the token.
-     * @return _sold The total amount of tokens sold.
-     */
-    function getReserves() public view returns (uint256 _reserve, uint256 _sold) {
-        _reserve = IERC20(token).balanceOf(address(this));
-        _sold = sold;
-    }
-
-    /**
      * @dev Calculates the amount of tokens that can be purchased.
      * @return purchasable The amount of tokens that can be purchased.
      */
     function purchasableTokens() public view returns (uint256 purchasable) {
-        (uint256 _reserve, uint256 _sold) = getReserves();
+        uint256 _reserve = IERC20(token).balanceOf(address(this));
+        uint256 _sold = sold;
         uint256 _maxOutLock = uint256(maxOutLock);
         uint256 _limit = _maxOutLock <= _reserve ? _maxOutLock : _reserve;
         purchasable = _sold >= _limit ? 0 : _limit.sub(_sold);
