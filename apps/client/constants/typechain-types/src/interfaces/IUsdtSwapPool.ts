@@ -30,7 +30,6 @@ import type {
 export interface IUsdtSwapPoolInterface extends utils.Interface {
   functions: {
     "factory()": FunctionFragment;
-    "getReserves()": FunctionFragment;
     "getUsdtIn(uint256)": FunctionFragment;
     "maxOutLock()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -39,6 +38,7 @@ export interface IUsdtSwapPoolInterface extends utils.Interface {
     "setMaxOutLock(uint112)": FunctionFragment;
     "setNewOwner(address)": FunctionFragment;
     "setPrice(uint112)": FunctionFragment;
+    "sold()": FunctionFragment;
     "subReserve(uint256,address)": FunctionFragment;
     "swap(uint256,address)": FunctionFragment;
     "swapAccountsCount()": FunctionFragment;
@@ -51,7 +51,6 @@ export interface IUsdtSwapPoolInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "factory"
-      | "getReserves"
       | "getUsdtIn"
       | "maxOutLock"
       | "owner"
@@ -60,6 +59,7 @@ export interface IUsdtSwapPoolInterface extends utils.Interface {
       | "setMaxOutLock"
       | "setNewOwner"
       | "setPrice"
+      | "sold"
       | "subReserve"
       | "swap"
       | "swapAccountsCount"
@@ -70,10 +70,6 @@ export interface IUsdtSwapPoolInterface extends utils.Interface {
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "getReserves",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "getUsdtIn",
     values: [PromiseOrValue<BigNumberish>]
@@ -100,6 +96,7 @@ export interface IUsdtSwapPoolInterface extends utils.Interface {
     functionFragment: "setPrice",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(functionFragment: "sold", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "subReserve",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
@@ -121,10 +118,6 @@ export interface IUsdtSwapPoolInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "usdt", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getReserves",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "getUsdtIn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "maxOutLock", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -142,6 +135,7 @@ export interface IUsdtSwapPoolInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setPrice", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "sold", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "subReserve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
   decodeFunctionResult(
@@ -219,12 +213,6 @@ export interface IUsdtSwapPool extends BaseContract {
   functions: {
     factory(overrides?: CallOverrides): Promise<[string] & { factory: string }>;
 
-    getReserves(
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & { reserve: BigNumber; sold: BigNumber }
-    >;
-
     getUsdtIn(
       tokenOut: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -255,6 +243,8 @@ export interface IUsdtSwapPool extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    sold(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     subReserve(
       amount: PromiseOrValue<BigNumberish>,
       to: PromiseOrValue<string>,
@@ -282,10 +272,6 @@ export interface IUsdtSwapPool extends BaseContract {
   };
 
   factory(overrides?: CallOverrides): Promise<string>;
-
-  getReserves(
-    overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber] & { reserve: BigNumber; sold: BigNumber }>;
 
   getUsdtIn(
     tokenOut: PromiseOrValue<BigNumberish>,
@@ -315,6 +301,8 @@ export interface IUsdtSwapPool extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  sold(overrides?: CallOverrides): Promise<BigNumber>;
+
   subReserve(
     amount: PromiseOrValue<BigNumberish>,
     to: PromiseOrValue<string>,
@@ -343,12 +331,6 @@ export interface IUsdtSwapPool extends BaseContract {
   callStatic: {
     factory(overrides?: CallOverrides): Promise<string>;
 
-    getReserves(
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & { reserve: BigNumber; sold: BigNumber }
-    >;
-
     getUsdtIn(
       tokenOut: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -376,6 +358,8 @@ export interface IUsdtSwapPool extends BaseContract {
       newPrice: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    sold(overrides?: CallOverrides): Promise<BigNumber>;
 
     subReserve(
       amount: PromiseOrValue<BigNumberish>,
@@ -432,8 +416,6 @@ export interface IUsdtSwapPool extends BaseContract {
   estimateGas: {
     factory(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getReserves(overrides?: CallOverrides): Promise<BigNumber>;
-
     getUsdtIn(
       tokenOut: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -461,6 +443,8 @@ export interface IUsdtSwapPool extends BaseContract {
       newPrice: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    sold(overrides?: CallOverrides): Promise<BigNumber>;
 
     subReserve(
       amount: PromiseOrValue<BigNumberish>,
@@ -491,8 +475,6 @@ export interface IUsdtSwapPool extends BaseContract {
   populateTransaction: {
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getReserves(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getUsdtIn(
       tokenOut: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -520,6 +502,8 @@ export interface IUsdtSwapPool extends BaseContract {
       newPrice: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    sold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     subReserve(
       amount: PromiseOrValue<BigNumberish>,

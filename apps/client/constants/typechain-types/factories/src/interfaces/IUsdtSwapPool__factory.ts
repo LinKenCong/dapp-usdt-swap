@@ -80,24 +80,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getReserves",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "reserve",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "sold",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -205,6 +187,19 @@ const _abi = [
     name: "setPrice",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "sold",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

@@ -1,6 +1,21 @@
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
-import { PageConfig, ContentConfig } from "../constants/type";
+import {
+  useAccount,
+  useContractRead,
+  useContractReads,
+  usePrepareContractWrite,
+  useContractWrite,
+  useSigner,
+} from "wagmi";
+import { utils, ethers } from "ethers";
+import { PageConfig, ContentConfig, PoolInfo } from "../constants/type";
+import { CONTRACT_MAP } from "../constants/contracts";
+import commonSty from "../styles/common.module.scss";
 import sty from "../styles/Sell.module.scss";
+import { ABI_IUsdtSwapFactory, ABI_IUsdtSwapPool } from "../constants/abi";
+import { useEthersSigner } from "../hooks";
+import { getPoolAddress, getPoolInfo } from "../utils";
 
 /** components */
 import PageLayout from "../components/PageLayout";
@@ -20,6 +35,83 @@ const contentConfig: ContentConfig = {
 };
 
 const Sell: NextPage = () => {
+  const { address } = useAccount();
+  const signer = useSigner();
+  const ethersSigner = useEthersSigner(address, signer.data);
+  // tip storage
+  const [errorTip, setErrorTip] = useState<string>("");
+  // token address storage
+  const [tokenAddress, setTokenAddress] = useState<string>("");
+  // pool address storage
+  const [poolAddress, setPoolAddress] = useState<string>("");
+  const [havePool, setHavePool] = useState<Boolean>(false);
+  // pool info storage
+  const [poolInfo, setPoolInfo] = useState<PoolInfo | null>(null);
+
+  // input onChange
+  const inputHandle = (e: any) => {
+    const v = e.target.value;
+    setTokenAddress(v);
+    setErrorTip(!havePool && utils.isAddress(v) ? "This pool does not exist!" : "Please enter the correct address!");
+  };
+  // getPool effect
+  useEffect(() => {
+    setHavePool(false);
+    setPoolAddress("");
+    let poolAddressRes: string | null, poolInfoRes: PoolInfo | null;
+    const getPoolHandle = async () => {
+      if (!ethersSigner || !address || !utils.isAddress(tokenAddress)) return;
+      poolAddressRes = await getPoolAddress(ethersSigner, [address, utils.getAddress(tokenAddress)]);
+      if (poolAddressRes && utils.isAddress(poolAddressRes)) {
+        setHavePool(true);
+        setErrorTip("");
+        setPoolAddress(poolAddressRes);
+        poolInfoRes = await getPoolInfo(ethersSigner, poolAddressRes);
+        if (poolInfoRes) {
+          const info: PoolInfo = {
+            maxOutLock: utils.formatEther(poolInfoRes.maxOutLock),
+            price: utils.formatEther(poolInfoRes.price),
+            totalSwap: utils.formatEther(poolInfoRes.totalSwap),
+            swapAccountsCount: poolInfoRes.swapAccountsCount.toString(),
+            sold: utils.formatEther(poolInfoRes.sold),
+          };
+          setPoolInfo(info);
+        }
+      }
+    };
+    getPoolHandle();
+  }, [tokenAddress]);
+
+  // createPool config
+  const createPoolConfig = usePrepareContractWrite({
+    address: utils.getAddress(CONTRACT_MAP.factory),
+    abi: ABI_IUsdtSwapFactory,
+    functionName: "createPool",
+    args: [utils.isAddress(tokenAddress) && utils.getAddress(tokenAddress)],
+    enabled: !poolAddress && utils.isAddress(tokenAddress),
+  });
+  const contractWrite = useContractWrite(createPoolConfig.config);
+
+  // createPool func
+  const createPool = async () => {
+    const create = await contractWrite?.writeAsync?.();
+    await create?.wait().then((res: any) => {
+      if (utils.isAddress(poolAddress) && poolAddress !== ethers.constants.AddressZero) {
+        setHavePool(true);
+        setErrorTip("");
+        setPoolAddress(poolAddress);
+      }
+    });
+  };
+
+  const setPool = () => {
+    // console.log("contractReadPoolInfo", contractReadPoolInfo.data);
+  };
+
+  const btnClick = async () => {
+    havePool ? setPool() : createPool();
+  };
+
   return (
     <PageLayout pageConfig={pageConfig}>
       <ContentLayout contentConfig={contentConfig}>
@@ -29,19 +121,29 @@ const Sell: NextPage = () => {
               label="Token"
               type="text"
               placeholder="Contract Address"
-              value=""
-              onChange={() => console.log("LabelInput")}
-            />
-            <DisplayList
-              data={[
-                { label: " label1", value: "value" },
-                { label: " label2", value: "value" },
-                { label: " label3", value: "value" },
-              ]}
+              value={tokenAddress}
+              onChange={inputHandle}
             />
           </div>
           <div className={sty.row}>
-            <BigButton label="Submit" onClick={() => console.log("BigButton")} />
+            {havePool && poolInfo && (
+              <DisplayList
+                data={[
+                  { label: "Pool", value: poolAddress },
+                  { label: "MaxOutLock", value: String(poolInfo?.maxOutLock) },
+                  { label: "Price", value: String(poolInfo?.price) },
+                  { label: "SwapAccounts", value: String(poolInfo?.swapAccountsCount) },
+                  { label: "TotalSwap", value: String(poolInfo?.totalSwap) },
+                  { label: "Sold", value: String(poolInfo?.sold) },
+                ]}
+              />
+            )}
+          </div>
+          <div className={sty.row}>
+            {tokenAddress && !havePool && <div className={commonSty.errorTip}>{errorTip}</div>}
+          </div>
+          <div className={sty.row}>
+            <BigButton label={havePool ? "Set Pool" : "Create Pool"} onClick={btnClick} />
           </div>
         </div>
       </ContentLayout>

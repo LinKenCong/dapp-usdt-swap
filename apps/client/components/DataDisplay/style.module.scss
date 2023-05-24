@@ -20,15 +20,22 @@
   .label {
     font-size: 0.87rem;
     font-weight: 500;
+    padding: 0 0.75rem;
     margin-right: 0.5rem;
     color: #333;
-    width: 20%;
-    text-align: center;
+    width: 30%;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .value {
     flex: 1;
     font-size: 0.87rem;
     color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

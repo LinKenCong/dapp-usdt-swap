@@ -2,11 +2,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  
+
   .row {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 1rem;
+  }
+  .row:last-child {
+    margin-bottom: 0;
   }
 }

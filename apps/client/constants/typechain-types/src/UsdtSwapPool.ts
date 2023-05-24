@@ -30,7 +30,6 @@ import type {
 export interface UsdtSwapPoolInterface extends utils.Interface {
   functions: {
     "factory()": FunctionFragment;
-    "getReserves()": FunctionFragment;
     "getUsdtIn(uint256)": FunctionFragment;
     "initialize(address,address,address)": FunctionFragment;
     "maxOutLock()": FunctionFragment;
@@ -40,6 +39,7 @@ export interface UsdtSwapPoolInterface extends utils.Interface {
     "setMaxOutLock(uint112)": FunctionFragment;
     "setNewOwner(address)": FunctionFragment;
     "setPrice(uint112)": FunctionFragment;
+    "sold()": FunctionFragment;
     "subReserve(uint256,address)": FunctionFragment;
     "swap(uint256,address)": FunctionFragment;
     "swapAccountsCount()": FunctionFragment;
@@ -52,7 +52,6 @@ export interface UsdtSwapPoolInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "factory"
-      | "getReserves"
       | "getUsdtIn"
       | "initialize"
       | "maxOutLock"
@@ -62,6 +61,7 @@ export interface UsdtSwapPoolInterface extends utils.Interface {
       | "setMaxOutLock"
       | "setNewOwner"
       | "setPrice"
+      | "sold"
       | "subReserve"
       | "swap"
       | "swapAccountsCount"
@@ -72,10 +72,6 @@ export interface UsdtSwapPoolInterface extends utils.Interface {
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "getReserves",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "getUsdtIn",
     values: [PromiseOrValue<BigNumberish>]
@@ -110,6 +106,7 @@ export interface UsdtSwapPoolInterface extends utils.Interface {
     functionFragment: "setPrice",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(functionFragment: "sold", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "subReserve",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
@@ -131,10 +128,6 @@ export interface UsdtSwapPoolInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "usdt", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getReserves",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "getUsdtIn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "maxOutLock", data: BytesLike): Result;
@@ -153,6 +146,7 @@ export interface UsdtSwapPoolInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setPrice", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "sold", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "subReserve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
   decodeFunctionResult(
@@ -230,12 +224,6 @@ export interface UsdtSwapPool extends BaseContract {
   functions: {
     factory(overrides?: CallOverrides): Promise<[string]>;
 
-    getReserves(
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & { _reserve: BigNumber; _sold: BigNumber }
-    >;
-
     getUsdtIn(
       _tokenOut: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -273,6 +261,8 @@ export interface UsdtSwapPool extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    sold(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     subReserve(
       _amount: PromiseOrValue<BigNumberish>,
       _to: PromiseOrValue<string>,
@@ -300,12 +290,6 @@ export interface UsdtSwapPool extends BaseContract {
   };
 
   factory(overrides?: CallOverrides): Promise<string>;
-
-  getReserves(
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber] & { _reserve: BigNumber; _sold: BigNumber }
-  >;
 
   getUsdtIn(
     _tokenOut: PromiseOrValue<BigNumberish>,
@@ -342,6 +326,8 @@ export interface UsdtSwapPool extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  sold(overrides?: CallOverrides): Promise<BigNumber>;
+
   subReserve(
     _amount: PromiseOrValue<BigNumberish>,
     _to: PromiseOrValue<string>,
@@ -369,12 +355,6 @@ export interface UsdtSwapPool extends BaseContract {
 
   callStatic: {
     factory(overrides?: CallOverrides): Promise<string>;
-
-    getReserves(
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & { _reserve: BigNumber; _sold: BigNumber }
-    >;
 
     getUsdtIn(
       _tokenOut: PromiseOrValue<BigNumberish>,
@@ -410,6 +390,8 @@ export interface UsdtSwapPool extends BaseContract {
       _newPrice: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    sold(overrides?: CallOverrides): Promise<BigNumber>;
 
     subReserve(
       _amount: PromiseOrValue<BigNumberish>,
@@ -466,8 +448,6 @@ export interface UsdtSwapPool extends BaseContract {
   estimateGas: {
     factory(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getReserves(overrides?: CallOverrides): Promise<BigNumber>;
-
     getUsdtIn(
       _tokenOut: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -503,6 +483,8 @@ export interface UsdtSwapPool extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    sold(overrides?: CallOverrides): Promise<BigNumber>;
+
     subReserve(
       _amount: PromiseOrValue<BigNumberish>,
       _to: PromiseOrValue<string>,
@@ -531,8 +513,6 @@ export interface UsdtSwapPool extends BaseContract {
 
   populateTransaction: {
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getReserves(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getUsdtIn(
       _tokenOut: PromiseOrValue<BigNumberish>,
@@ -568,6 +548,8 @@ export interface UsdtSwapPool extends BaseContract {
       _newPrice: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    sold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     subReserve(
       _amount: PromiseOrValue<BigNumberish>,

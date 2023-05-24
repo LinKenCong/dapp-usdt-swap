@@ -1,3 +1,5 @@
+import { BigNumber, BigNumberish } from "ethers";
+
 export type PageConfig = {
   title: string;
   description: string;
@@ -17,3 +19,11 @@ export type ContractMap = {
   usdt: string;
   factory: string;
 };
+
+export interface PoolInfo {
+  maxOutLock: BigNumberish;
+  price: BigNumberish;
+  totalSwap: BigNumberish;
+  swapAccountsCount: BigNumberish;
+  sold: BigNumberish;
+}
