@@ -21,7 +21,6 @@
     font-size: 0.87rem;
     font-weight: 500;
     padding: 0 0.75rem;
-    margin-right: 0.5rem;
     color: #333;
     width: 30%;
     text-align: right;
@@ -32,6 +31,7 @@
 
   .value {
     flex: 1;
+    padding: 0 0.75rem;
     font-size: 0.87rem;
     color: #333;
     white-space: nowrap;

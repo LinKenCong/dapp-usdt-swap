@@ -35,7 +35,7 @@ const contentConfig: ContentConfig = {
 };
 
 const Sell: NextPage = () => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const signer = useSigner();
   const ethersSigner = useEthersSigner(address, signer.data);
   // tip storage
@@ -52,33 +52,35 @@ const Sell: NextPage = () => {
   const inputHandle = (e: any) => {
     const v = e.target.value;
     setTokenAddress(v);
+    if (!isConnected) return setErrorTip("Wallet not connected!");
     setErrorTip(!havePool && utils.isAddress(v) ? "This pool does not exist!" : "Please enter the correct address!");
+  };
+
+  const getPoolHandle = async () => {
+    let poolAddressRes: string | null, poolInfoRes: PoolInfo | null;
+    if (!ethersSigner || !address || !utils.isAddress(tokenAddress)) return;
+    poolAddressRes = await getPoolAddress(ethersSigner, [address, utils.getAddress(tokenAddress)]);
+    if (poolAddressRes && utils.isAddress(poolAddressRes)) {
+      setHavePool(true);
+      setErrorTip("");
+      setPoolAddress(poolAddressRes);
+      poolInfoRes = await getPoolInfo(ethersSigner, poolAddressRes);
+      if (poolInfoRes) {
+        const info: PoolInfo = {
+          maxOutLock: utils.formatEther(poolInfoRes.maxOutLock),
+          price: utils.formatEther(poolInfoRes.price),
+          totalSwap: utils.formatEther(poolInfoRes.totalSwap),
+          swapAccountsCount: poolInfoRes.swapAccountsCount.toString(),
+          sold: utils.formatEther(poolInfoRes.sold),
+        };
+        setPoolInfo(info);
+      }
+    }
   };
   // getPool effect
   useEffect(() => {
     setHavePool(false);
     setPoolAddress("");
-    let poolAddressRes: string | null, poolInfoRes: PoolInfo | null;
-    const getPoolHandle = async () => {
-      if (!ethersSigner || !address || !utils.isAddress(tokenAddress)) return;
-      poolAddressRes = await getPoolAddress(ethersSigner, [address, utils.getAddress(tokenAddress)]);
-      if (poolAddressRes && utils.isAddress(poolAddressRes)) {
-        setHavePool(true);
-        setErrorTip("");
-        setPoolAddress(poolAddressRes);
-        poolInfoRes = await getPoolInfo(ethersSigner, poolAddressRes);
-        if (poolInfoRes) {
-          const info: PoolInfo = {
-            maxOutLock: utils.formatEther(poolInfoRes.maxOutLock),
-            price: utils.formatEther(poolInfoRes.price),
-            totalSwap: utils.formatEther(poolInfoRes.totalSwap),
-            swapAccountsCount: poolInfoRes.swapAccountsCount.toString(),
-            sold: utils.formatEther(poolInfoRes.sold),
-          };
-          setPoolInfo(info);
-        }
-      }
-    };
     getPoolHandle();
   }, [tokenAddress]);
 
@@ -99,9 +101,9 @@ const Sell: NextPage = () => {
       if (utils.isAddress(poolAddress) && poolAddress !== ethers.constants.AddressZero) {
         setHavePool(true);
         setErrorTip("");
-        setPoolAddress(poolAddress);
       }
     });
+    await getPoolHandle();
   };
 
   const setPool = () => {
