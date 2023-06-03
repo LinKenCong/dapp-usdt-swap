@@ -1,43 +1,37 @@
-import { utils, ethers, BigNumber } from "ethers";
-import {
-  UsdtSwapPool__factory,
-  UsdtSwapPool,
-  UsdtSwapFactory__factory,
-  UsdtSwapFactory,
-} from "../constants/typechain-types";
-import { CONTRACT_MAP } from "../constants/contracts";
-import { PoolInfo } from "../constants/type";
+import { utils, ethers, BigNumber, constants } from "ethers";
 
-const FACTORY = utils.getAddress(CONTRACT_MAP.factory);
+export * from "./token";
+export * from "./poolFactory";
+export * from "./pool";
 
-export const getPoolAddress = async (
-  ethersSigner: ethers.providers.JsonRpcSigner | null,
-  args: [owner: `0x${string}`, token: `0x${string}`]
-): Promise<string | null> => {
-  if (!ethersSigner || !utils.isAddress(FACTORY)) {
-    return null;
+// Truncate the input string to 8 characters and add ellipsis in the middle
+export const truncateAddress = (str: string): string => {
+  if (str.length <= 8) {
+    return str;
   }
-  const factory = new UsdtSwapFactory__factory(ethersSigner);
-  const usdtSwapFactory = factory.attach(FACTORY) as UsdtSwapFactory;
-  const poolAddress = await usdtSwapFactory.getPool(args[0], args[1]);
-  return poolAddress !== ethers.constants.AddressZero ? poolAddress : null;
+  const start = str.substring(0, 4);
+  const end = str.substring(str.length - 4);
+  return `${start}...${end}`;
 };
 
-export const getPoolInfo = async (
-  ethersSigner: ethers.providers.JsonRpcSigner | null,
-  pool: string | undefined
-): Promise<PoolInfo | null> => {
-  if (!pool || !ethersSigner) {
-    return null;
+// Format the input value of an event's target element to a float with two decimal places
+export const formatInputFloat = (event: any) => {
+  const regex = /^[0-9]+(\.[0-9]{0,2})?$/;
+  const value = event.target.value;
+  if (regex.test(value)) {
+    event.target.value = value;
+  } else {
+    const floatValue = parseFloat(value);
+    if (!isNaN(floatValue)) {
+      const roundedValue = floatValue.toFixed(2);
+      event.target.value = roundedValue;
+    } else {
+      event.target.value = Number(0).toFixed(2);
+    }
   }
-  const poolFactory = new UsdtSwapPool__factory(ethersSigner);
-  const usdtSwapPool = poolFactory.attach(pool) as UsdtSwapPool;
-  const poolInfo: PoolInfo = {
-    maxOutLock: await usdtSwapPool.maxOutLock(),
-    price: await usdtSwapPool.price(),
-    totalSwap: await usdtSwapPool.totalSwap(),
-    swapAccountsCount: await usdtSwapPool.swapAccountsCount(),
-    sold: await usdtSwapPool.sold(),
-  };
-  return poolInfo;
 };
+
+export function isValidEthAddress(input: string): boolean {
+  const ethAddressRegex = /^0x[a-fA-F0-9]{40}$/;
+  return ethAddressRegex.test(input);
+}

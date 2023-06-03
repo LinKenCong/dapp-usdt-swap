@@ -1,3 +1,5 @@
+import { CloseCircleOutlined } from "@ant-design/icons";
+import { formatInputFloat } from "../../utils";
 import sty from "./style.module.scss";
 import { useState } from "react";
 
@@ -5,47 +7,60 @@ interface LabelInputButtonProps {
   label: string;
   type?: "text" | "password" | "email" | "number";
   placeholder?: string;
+  btnText?: string;
   value?: string;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  buttonText: string;
+  onClick: (value: string) => void;
+  onInput?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-function LabelInputButton({ label, type = "text", placeholder, value, onChange, buttonText }: LabelInputButtonProps) {
-  const [showInput, setShowInput] = useState(true);
-  const [showValue, setShowValue] = useState(false);
+function LabelInputButton(props: LabelInputButtonProps) {
+  const [showInput, setShowInput] = useState(false);
+  const [editValue, setEditValue] = useState<string>("");
 
-  function handleClick() {
+  const handleClick = async () => {
+    await props.onClick(editValue);
     setShowInput(false);
-    setShowValue(true);
-  }
+  };
+  const handleChange = (e: any) => {
+    setEditValue(String(e.target.value));
+  };
 
   return (
     <div className={sty.LabelInputButton}>
-      {showInput && (
-        <>
-          <label className={sty.label}>{label}</label>
-          <div className={sty.inputWrapper}>
-            <input type={type} placeholder={placeholder} value={value} onChange={onChange} className={sty.input} />
+      <label className={sty.label}>{props.label}</label>
+      <div className={sty.inputWrapper}>
+        {!!showInput ? (
+          <>
+            <input
+              type={props.type}
+              placeholder={props.placeholder}
+              value={editValue}
+              onChange={handleChange}
+              onInput={props.onInput}
+              className={sty.input}
+            />
             <button onClick={handleClick} className={sty.button}>
-              {buttonText}
+              {props.btnText || "Set"}
             </button>
-          </div>
-        </>
-      )}
-      {showValue && (
-        <div className={sty.valueWrapper}>
-          <span className={sty.value}>{value}</span>
-          <button
-            onClick={() => {
-              setShowInput(true);
-              setShowValue(false);
-            }}
-            className={sty.button}
-          >
-            Edit
-          </button>
-        </div>
-      )}
+            <button onClick={() => setShowInput(false)} className={`${sty.button} ${sty.close}`}>
+              <CloseCircleOutlined />
+            </button>
+          </>
+        ) : (
+          <>
+            <span className={sty.value}>{props.value}</span>
+            <button
+              onClick={() => {
+                setEditValue(String(props.value));
+                setShowInput(true);
+              }}
+              className={`${sty.button} ${sty.edit}`}
+            >
+              Edit
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }

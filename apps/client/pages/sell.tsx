@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
-import {
-  useAccount,
-  useContractRead,
-  useContractReads,
-  usePrepareContractWrite,
-  useContractWrite,
-  useSigner,
-} from "wagmi";
+import { useRouter } from "next/router";
+import { useAccount, usePrepareContractWrite, useContractWrite, useSigner } from "wagmi";
 import { utils, ethers } from "ethers";
 import { PageConfig, ContentConfig, PoolInfo } from "../constants/type";
 import { CONTRACT_MAP } from "../constants/contracts";
@@ -15,7 +9,7 @@ import commonSty from "../styles/common.module.scss";
 import sty from "../styles/Sell.module.scss";
 import { ABI_IUsdtSwapFactory, ABI_IUsdtSwapPool } from "../constants/abi";
 import { useEthersSigner } from "../hooks";
-import { getPoolAddress, getPoolInfo } from "../utils";
+import { getPoolAddress, getPoolInfo, formatPoolInfo } from "../utils";
 
 /** components */
 import PageLayout from "../components/PageLayout";
@@ -35,6 +29,7 @@ const contentConfig: ContentConfig = {
 };
 
 const Sell: NextPage = () => {
+  const router = useRouter();
   const { address, isConnected } = useAccount();
   const signer = useSigner();
   const ethersSigner = useEthersSigner(address, signer.data);
@@ -65,16 +60,7 @@ const Sell: NextPage = () => {
       setErrorTip("");
       setPoolAddress(poolAddressRes);
       poolInfoRes = await getPoolInfo(ethersSigner, poolAddressRes);
-      if (poolInfoRes) {
-        const info: PoolInfo = {
-          maxOutLock: utils.formatEther(poolInfoRes.maxOutLock),
-          price: utils.formatEther(poolInfoRes.price),
-          totalSwap: utils.formatEther(poolInfoRes.totalSwap),
-          swapAccountsCount: poolInfoRes.swapAccountsCount.toString(),
-          sold: utils.formatEther(poolInfoRes.sold),
-        };
-        setPoolInfo(info);
-      }
+      if (poolInfoRes) setPoolInfo(formatPoolInfo(poolInfoRes));
     }
   };
   // getPool effect
@@ -107,7 +93,13 @@ const Sell: NextPage = () => {
   };
 
   const setPool = () => {
-    // console.log("contractReadPoolInfo", contractReadPoolInfo.data);
+    router.push({
+      pathname: "/setPool",
+      query: {
+        poolAddress: poolAddress,
+        tokenAddress: tokenAddress,
+      },
+    });
   };
 
   const btnClick = async () => {

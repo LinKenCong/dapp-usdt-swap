@@ -26,4 +26,6 @@ export interface PoolInfo {
   totalSwap: BigNumberish;
   swapAccountsCount: BigNumberish;
   sold: BigNumberish;
+  owner: String;
+  balance: BigNumberish;
 }
