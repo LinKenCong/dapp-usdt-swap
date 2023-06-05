@@ -24,7 +24,6 @@ contract UsdtSwapPool is IUsdtSwapPool, ReentrancyGuard {
 
     // user => swap token
     mapping(address => uint256) public swapCountOf;
-    uint256 public totalSwap;
     uint256 public swapAccountsCount;
     uint256 public sold;
 
@@ -86,10 +85,9 @@ contract UsdtSwapPool is IUsdtSwapPool, ReentrancyGuard {
         uint256 _usdtIn = getUsdtIn(_tokenOut);
         require(IERC20(usdt).balanceOf(msg.sender) >= _usdtIn, "INSUFFICIENT_AVAILABLE_USDT");
         require(IERC20(usdt).allowance(msg.sender, address(this)) >= _usdtIn, "INSUFFICIENT_APPROVE_USDT");
-        swapCountOf[msg.sender] = swapCountOf[msg.sender].add(_tokenOut);
-        totalSwap = totalSwap.add(_tokenOut);
-        sold = sold.add(_tokenOut);
         if (swapCountOf[msg.sender] == 0) swapAccountsCount++;
+        swapCountOf[msg.sender] = swapCountOf[msg.sender].add(_tokenOut);
+        sold = sold.add(_tokenOut);
         IERC20(usdt).safeTransferFrom(msg.sender, owner, _usdtIn);
         IERC20(token).safeTransfer(_to, _tokenOut);
         emit Swap(msg.sender, _usdtIn, _tokenOut, _to);

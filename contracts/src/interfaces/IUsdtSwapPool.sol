@@ -14,8 +14,6 @@ interface IUsdtSwapPool {
 
     function token() external view returns (address token);
 
-    function totalSwap() external view returns (uint256);
-
     function swapCountOf(address account) external view returns (uint256);
 
     function maxOutLock() external view returns (uint112);
