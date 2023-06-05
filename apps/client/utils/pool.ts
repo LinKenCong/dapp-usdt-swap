@@ -1,28 +1,141 @@
 import { utils, ethers, BigNumber } from "ethers";
-import { UsdtSwapPool__factory, UsdtSwapPool, ERC20, ERC20__factory } from "../constants/typechain-types";
 import { PoolInfo } from "../constants/type";
+import { getPool } from "./contract";
+import { callBalance } from "./token";
+
+export const callPoolPurchasable = async (ethersSigner: ethers.providers.JsonRpcSigner, poolAddress: string) => {
+  try {
+    const pool = getPool(ethersSigner, poolAddress);
+    return await pool.purchasableTokens();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const callPoolMaxOutLock = async (ethersSigner: ethers.providers.JsonRpcSigner, poolAddress: string) => {
+  try {
+    const pool = getPool(ethersSigner, poolAddress);
+    return await pool.maxOutLock();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const callPoolPrice = async (ethersSigner: ethers.providers.JsonRpcSigner, poolAddress: string) => {
+  try {
+    const pool = getPool(ethersSigner, poolAddress);
+    return await pool.price();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const callPoolSwapAccountsCount = async (ethersSigner: ethers.providers.JsonRpcSigner, poolAddress: string) => {
+  try {
+    const pool = getPool(ethersSigner, poolAddress);
+    return await pool.swapAccountsCount();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const callPoolSold = async (ethersSigner: ethers.providers.JsonRpcSigner, poolAddress: string) => {
+  try {
+    const pool = getPool(ethersSigner, poolAddress);
+    return await pool.sold();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const callPoolOwner = async (ethersSigner: ethers.providers.JsonRpcSigner, poolAddress: string) => {
+  try {
+    const pool = getPool(ethersSigner, poolAddress);
+    return await pool.owner();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const callPoolToken = async (ethersSigner: ethers.providers.JsonRpcSigner, poolAddress: string) => {
+  try {
+    const pool = getPool(ethersSigner, poolAddress);
+    return await pool.token();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const callPoolFactory = async (ethersSigner: ethers.providers.JsonRpcSigner, poolAddress: string) => {
+  try {
+    const pool = getPool(ethersSigner, poolAddress);
+    return await pool.factory();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const callPoolUsdt = async (ethersSigner: ethers.providers.JsonRpcSigner, poolAddress: string) => {
+  try {
+    const pool = getPool(ethersSigner, poolAddress);
+    return await pool.usdt();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const callPoolSwapCountOf = async (
+  ethersSigner: ethers.providers.JsonRpcSigner,
+  poolAddress: string,
+  args: [account: string]
+) => {
+  try {
+    const pool = getPool(ethersSigner, poolAddress);
+    return await pool.swapCountOf(args[0]);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const callPoolGetUsdtIn = async (
+  ethersSigner: ethers.providers.JsonRpcSigner,
+  poolAddress: string,
+  args: [tokenOut: BigNumber]
+) => {
+  try {
+    const pool = getPool(ethersSigner, poolAddress);
+    return await pool.getUsdtIn(args[0]);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
 
 // Define a function to get pool information
 export const getPoolInfo = async (
   ethersSigner: ethers.providers.JsonRpcSigner,
-  pool: string
+  poolAddress: string
 ): Promise<PoolInfo | null> => {
   try {
-    // Create a contract instance for the pool and token
-    const poolFactory = new UsdtSwapPool__factory(ethersSigner);
-    const usdtSwapPool = poolFactory.attach(pool) as UsdtSwapPool;
-    const tokenFactory = new ERC20__factory(ethersSigner);
-    const token = tokenFactory.attach(utils.getAddress(await usdtSwapPool.token())) as ERC20;
-    const owner = await usdtSwapPool.owner();
-    // Get pool information and return it
+    const poolToken = await callPoolToken(ethersSigner, poolAddress);
     const poolInfo: PoolInfo = {
-      maxOutLock: await usdtSwapPool.maxOutLock(),
-      price: await usdtSwapPool.price(),
-      totalSwap: await usdtSwapPool.totalSwap(),
-      swapAccountsCount: await usdtSwapPool.swapAccountsCount(),
-      sold: await usdtSwapPool.sold(),
-      owner: await usdtSwapPool.owner(),
-      balance: await token.balanceOf(pool),
+      maxOutLock: (await callPoolMaxOutLock(ethersSigner, poolAddress)) || "",
+      price: (await callPoolPrice(ethersSigner, poolAddress)) || "",
+      swapAccountsCount: (await callPoolSwapAccountsCount(ethersSigner, poolAddress)) || "",
+      sold: (await callPoolSold(ethersSigner, poolAddress)) || "",
+      owner: String(await callPoolOwner(ethersSigner, poolAddress)) || "",
+      token: poolToken || "",
+      balance: (await callBalance(ethersSigner, String(poolToken), [poolAddress])) || "",
     };
     return poolInfo;
   } catch (error) {
@@ -36,30 +149,25 @@ export const formatPoolInfo = (poolInfoRes: PoolInfo): PoolInfo => {
   const res: PoolInfo = {
     maxOutLock: utils.formatEther(poolInfoRes.maxOutLock),
     price: utils.formatEther(poolInfoRes.price),
-    totalSwap: utils.formatEther(poolInfoRes.totalSwap),
     swapAccountsCount: poolInfoRes.swapAccountsCount.toString(),
     sold: utils.formatEther(poolInfoRes.sold),
     owner: utils.getAddress(String(poolInfoRes.owner)),
+    token: utils.getAddress(String(poolInfoRes.token)),
     balance: utils.formatEther(poolInfoRes.balance),
   };
   return res;
 };
 
 // Define a function to write the maxOutLock value to the contract
-export const writeMaxOutLock = async (
+export const sendPoolMaxOutLock = async (
   ethersSigner: ethers.providers.JsonRpcSigner,
-  pool: `0x${string}`,
-  args: [newMaxOut: string]
+  poolAddress: string,
+  args: [newMaxOut: BigNumber]
 ) => {
   try {
-    // Create a contract instance for the pool
-    const poolFactory = new UsdtSwapPool__factory(ethersSigner);
-    const usdtSwapPool = poolFactory.attach(pool) as UsdtSwapPool;
-
-    // Parse the newMaxOut value and write it to the contract
-    const newMaxOut = utils.parseEther(args[0]);
-    await usdtSwapPool.estimateGas.setMaxOutLock(newMaxOut);
-    const tx = await usdtSwapPool.setMaxOutLock(newMaxOut);
+    const pool = getPool(ethersSigner, poolAddress);
+    await pool.estimateGas.setMaxOutLock(args[0]);
+    const tx = await pool.setMaxOutLock(args[0]);
     const txRes = await tx.wait();
     return txRes;
   } catch (error) {
@@ -69,20 +177,15 @@ export const writeMaxOutLock = async (
 };
 
 // Define a function to write the price value to the contract
-export const writePrice = async (
+export const sendPoolPrice = async (
   ethersSigner: ethers.providers.JsonRpcSigner,
-  pool: `0x${string}`,
-  args: [newPrice: string]
+  poolAddress: string,
+  args: [newPrice: BigNumber]
 ) => {
   try {
-    // Create a contract instance for the pool
-    const poolFactory = new UsdtSwapPool__factory(ethersSigner);
-    const usdtSwapPool = poolFactory.attach(pool) as UsdtSwapPool;
-
-    // Parse the newPrice value and write it to the contract
-    const newPrice = utils.parseEther(args[0]);
-    await usdtSwapPool.estimateGas.setPrice(newPrice);
-    const tx = await usdtSwapPool.setPrice(newPrice);
+    const pool = getPool(ethersSigner, poolAddress);
+    await pool.estimateGas.setPrice(args[0]);
+    const tx = await pool.setPrice(args[0]);
     const txRes = await tx.wait();
     return txRes;
   } catch (error) {
@@ -92,19 +195,15 @@ export const writePrice = async (
 };
 
 // Define a function to write the new owner value to the contract
-export const writeNewOwner = async (
+export const sendPoolNewOwner = async (
   ethersSigner: ethers.providers.JsonRpcSigner,
-  pool: `0x${string}`,
-  args: [newOwner: `0x${string}`]
+  poolAddress: string,
+  args: [newOwner: string]
 ) => {
   try {
-    // Create a contract instance for the pool
-    const poolFactory = new UsdtSwapPool__factory(ethersSigner);
-    const usdtSwapPool = poolFactory.attach(pool) as UsdtSwapPool;
-
-    // Write the new owner value to the contract
-    await usdtSwapPool.estimateGas.setNewOwner(args[0]);
-    const tx = await usdtSwapPool.setNewOwner(args[0]);
+    const pool = getPool(ethersSigner, poolAddress);
+    await pool.estimateGas.setNewOwner(args[0]);
+    const tx = await pool.setNewOwner(args[0]);
     const txRes = await tx.wait();
     return txRes;
   } catch (error) {
@@ -114,20 +213,32 @@ export const writeNewOwner = async (
 };
 
 // Define a function to subtract the reserve value from the contract
-export const writeSubReserve = async (
+export const sendPoolSubReserve = async (
   ethersSigner: ethers.providers.JsonRpcSigner,
-  pool: `0x${string}`,
-  args: [amount: string, to: `0x${string}`]
+  poolAddress: string,
+  args: [amount: BigNumber, to: string]
 ) => {
   try {
-    // Create a contract instance for the pool
-    const poolFactory = new UsdtSwapPool__factory(ethersSigner);
-    const usdtSwapPool = poolFactory.attach(pool) as UsdtSwapPool;
+    const pool = getPool(ethersSigner, poolAddress);
+    await pool.estimateGas.subReserve(args[0], args[1]);
+    const tx = await pool.subReserve(args[0], args[1]);
+    const txRes = await tx.wait();
+    return txRes;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
 
-    // Parse the amount value and subtract the reserve from the contract
-    const amount = utils.parseEther(args[0]);
-    await usdtSwapPool.estimateGas.subReserve(amount, args[1]);
-    const tx = await usdtSwapPool.subReserve(amount, args[1]);
+export const sendPoolSwap = async (
+  ethersSigner: ethers.providers.JsonRpcSigner,
+  poolAddress: string,
+  args: [tokenOut: BigNumber, to: string]
+) => {
+  try {
+    const pool = getPool(ethersSigner, poolAddress);
+    await pool.estimateGas.swap(args[0], args[1]);
+    const tx = await pool.swap(args[0], args[1]);
     const txRes = await tx.wait();
     return txRes;
   } catch (error) {

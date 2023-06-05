@@ -26,7 +26,7 @@ export const formatInputFloat = (event: any) => {
       const roundedValue = floatValue.toFixed(2);
       event.target.value = roundedValue;
     } else {
-      event.target.value = Number(0).toFixed(2);
+      event.target.value = "";
     }
   }
 };
