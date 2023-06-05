@@ -23,9 +23,9 @@ export type ContractMap = {
 export interface PoolInfo {
   maxOutLock: BigNumberish;
   price: BigNumberish;
-  totalSwap: BigNumberish;
   swapAccountsCount: BigNumberish;
   sold: BigNumberish;
   owner: String;
+  token: String;
   balance: BigNumberish;
 }

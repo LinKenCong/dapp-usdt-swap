@@ -7,7 +7,7 @@ export const NavListConfig: NavListItem[] = [
   },
   {
     text: "Buy",
-    page: "/",
+    page: "/buy",
   },
   {
     text: "Sell",
