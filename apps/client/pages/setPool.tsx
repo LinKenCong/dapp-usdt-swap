@@ -11,17 +11,15 @@ import LabelInputButton from "../components/Input/LabelInputButton";
 import { useAccount, useSigner } from "wagmi";
 import { useEthersSigner } from "../hooks";
 import {
-  callAllowance,
   callBalance,
   formatInputFloat,
   formatPoolInfo,
   getPoolInfo,
-  sendApprove,
   sendTransfer,
-  writeMaxOutLock,
-  writeNewOwner,
-  writePrice,
-  writeSubReserve,
+  sendPoolMaxOutLock,
+  sendPoolNewOwner,
+  sendPoolPrice,
+  sendPoolSubReserve,
 } from "../utils";
 import { utils, ethers } from "ethers";
 
@@ -71,7 +69,7 @@ const SetPool: NextPage = () => {
     try {
       const pool: string = String(poolAddress);
       if (!ethersSigner || !address || !utils.isAddress(pool)) return;
-      const tx = await writeMaxOutLock(ethersSigner, utils.getAddress(pool), [v]);
+      const tx = await sendPoolMaxOutLock(ethersSigner, utils.getAddress(pool), [utils.parseEther(v)]);
       if (tx) setMaxOutLock(v);
     } catch (error) {
       console.error(`Failed to handle max out lock: ${error}`);
@@ -83,7 +81,7 @@ const SetPool: NextPage = () => {
     try {
       const pool: string = String(poolAddress);
       if (!ethersSigner || !address || !utils.isAddress(pool)) return;
-      const tx = await writePrice(ethersSigner, utils.getAddress(pool), [v]);
+      const tx = await sendPoolPrice(ethersSigner, utils.getAddress(pool), [utils.parseEther(v)]);
       if (tx) setPrice(v);
     } catch (error) {
       console.error(`Failed to handle price: ${error}`);
@@ -95,7 +93,7 @@ const SetPool: NextPage = () => {
     try {
       const pool: string = String(poolAddress);
       if (!ethersSigner || !address || !utils.isAddress(pool)) return;
-      const tx = await writeNewOwner(ethersSigner, utils.getAddress(pool), [utils.getAddress(v)]);
+      const tx = await sendPoolNewOwner(ethersSigner, utils.getAddress(pool), [utils.getAddress(v)]);
       if (tx) getPoolHandle();
     } catch (error) {
       console.error(`Failed to handle new owner: ${error}`);
@@ -107,9 +105,9 @@ const SetPool: NextPage = () => {
       const pool: string = String(poolAddress);
       const token: string = String(tokenAddress);
       if (!ethersSigner || !address || !utils.isAddress(pool)) return;
-      const tx = await writeSubReserve(ethersSigner, utils.getAddress(pool), [v, address]);
+      const tx = await sendPoolSubReserve(ethersSigner, utils.getAddress(pool), [utils.parseEther(v), address]);
       if (tx) {
-        const balance = await callBalance(ethersSigner, [token, pool]);
+        const balance = await callBalance(ethersSigner, token, [pool]);
         if (balance) setReserve(utils.formatEther(balance));
       }
     } catch (error) {
@@ -124,13 +122,16 @@ const SetPool: NextPage = () => {
       const amount = utils.parseEther(v);
       // check
       if (amount.isZero() || !ethersSigner || !address || !utils.isAddress(pool)) return;
-      const ownerBalance = await callBalance(ethersSigner, [token, address]);
+      const ownerBalance = await callBalance(ethersSigner, token, [address]);
       // check
-      if (ownerBalance?.lt(amount)) return;
-      const tx = await sendTransfer(ethersSigner, [token, pool, amount]);
+      if (ownerBalance.lt(amount)) {
+        console.log("Token Insufficient!", utils.formatEther(ownerBalance));
+        return;
+      }
+      const tx = await sendTransfer(ethersSigner, token, [pool, amount]);
       // check
       if (tx) {
-        const balance = await callBalance(ethersSigner, [token, pool]);
+        const balance = await callBalance(ethersSigner, token, [pool]);
         if (balance) {
           setReserve(utils.formatEther(balance));
           setTransferAmount("");
