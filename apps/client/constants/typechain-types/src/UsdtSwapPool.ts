@@ -45,7 +45,6 @@ export interface UsdtSwapPoolInterface extends utils.Interface {
     "swapAccountsCount()": FunctionFragment;
     "swapCountOf(address)": FunctionFragment;
     "token()": FunctionFragment;
-    "totalSwap()": FunctionFragment;
     "usdt()": FunctionFragment;
   };
 
@@ -67,7 +66,6 @@ export interface UsdtSwapPoolInterface extends utils.Interface {
       | "swapAccountsCount"
       | "swapCountOf"
       | "token"
-      | "totalSwap"
       | "usdt"
   ): FunctionFragment;
 
@@ -124,7 +122,6 @@ export interface UsdtSwapPoolInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "token", values?: undefined): string;
-  encodeFunctionData(functionFragment: "totalSwap", values?: undefined): string;
   encodeFunctionData(functionFragment: "usdt", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
@@ -158,7 +155,6 @@ export interface UsdtSwapPoolInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "totalSwap", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "usdt", data: BytesLike): Result;
 
   events: {
@@ -284,8 +280,6 @@ export interface UsdtSwapPool extends BaseContract {
 
     token(overrides?: CallOverrides): Promise<[string]>;
 
-    totalSwap(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     usdt(overrides?: CallOverrides): Promise<[string]>;
   };
 
@@ -349,8 +343,6 @@ export interface UsdtSwapPool extends BaseContract {
 
   token(overrides?: CallOverrides): Promise<string>;
 
-  totalSwap(overrides?: CallOverrides): Promise<BigNumber>;
-
   usdt(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
@@ -413,8 +405,6 @@ export interface UsdtSwapPool extends BaseContract {
     ): Promise<BigNumber>;
 
     token(overrides?: CallOverrides): Promise<string>;
-
-    totalSwap(overrides?: CallOverrides): Promise<BigNumber>;
 
     usdt(overrides?: CallOverrides): Promise<string>;
   };
@@ -506,8 +496,6 @@ export interface UsdtSwapPool extends BaseContract {
 
     token(overrides?: CallOverrides): Promise<BigNumber>;
 
-    totalSwap(overrides?: CallOverrides): Promise<BigNumber>;
-
     usdt(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
@@ -571,8 +559,6 @@ export interface UsdtSwapPool extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    totalSwap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     usdt(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
