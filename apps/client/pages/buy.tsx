@@ -40,6 +40,7 @@ const contentConfig: ContentConfig = {
 
 const Buy: NextPage = () => {
   const router = useRouter();
+  const { listPool } = router.query;
   const { address, isConnected } = useAccount();
   const signer = useSigner();
   const ethersSigner = useEthersSigner(address, signer.data);
@@ -47,7 +48,7 @@ const Buy: NextPage = () => {
   // tip storage
   const [errorTip, setErrorTip] = useState<string>("");
   // pool address storage
-  const [poolAddress, setPoolAddress] = useState<string>("");
+  const [poolAddress, setPoolAddress] = useState<string>(``);
   const [havePool, setHavePool] = useState<Boolean>(false);
   // pool info storage
   const [price, setPrice] = useState<string>("");
@@ -76,7 +77,14 @@ const Buy: NextPage = () => {
       setPrice(utils.formatEther(String(_price)));
     }
   };
-  // getPool effect
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPoolAddress(`${listPool || ""}`);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     setHavePool(false);
     getPoolHandle();

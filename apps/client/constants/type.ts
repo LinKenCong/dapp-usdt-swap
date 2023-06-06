@@ -29,3 +29,11 @@ export interface PoolInfo {
   token: String;
   balance: BigNumberish;
 }
+
+export type TokenListItem = {
+  token: string;
+  pool: string;
+  name: string;
+  symbol: string;
+  icon: string;
+};

@@ -15,6 +15,6 @@ export const NavListConfig: NavListItem[] = [
   },
   {
     text: "Token List",
-    page: "/",
+    page: "/tokenList",
   },
 ];

@@ -1,0 +1,69 @@
+.tokenList {
+  $list-background-color: #f5f5f7;
+  $list-item-background-color: #ffffff;
+  $list-item-hover-background-color: #f0f0f0;
+  $list-item-padding: 1rem;
+  width: 100%;
+  flex: 1;
+
+  .list {
+    border: 1px solid #d5d5d7;
+    border-radius: 0.25rem;
+    background-color: $list-background-color;
+    font-size: 1rem;
+    padding: $list-item-padding;
+    width: 100%;
+
+    .tr {
+      background-color: $list-item-background-color;
+      border-radius: 0.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding: $list-item-padding;
+    }
+
+    td {
+      padding: 0.5rem 0.5rem;
+      font-size: 0.875rem;
+      border-bottom: 1px solid #ebebeb;
+      text-align: center;
+    }
+
+    .icon {
+    }
+
+    .name {
+      font-weight: bold;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .symbol {
+      font-weight: bold;
+    }
+
+    .address {
+      color: #666666;
+      font-size: 0.5rem;
+    }
+
+    .button {
+      background-color: transparent;
+      border: none;
+      color: #007aff;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: bold;
+      padding: 0;
+      text-decoration: underline;
+
+      &:hover {
+        background-color: $list-item-hover-background-color;
+      }
+    }
+  }
+}

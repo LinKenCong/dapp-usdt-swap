@@ -5,12 +5,12 @@ export * from "./poolFactory";
 export * from "./pool";
 
 // Truncate the input string to 8 characters and add ellipsis in the middle
-export const truncateAddress = (str: string): string => {
+export const truncateAddress = (str: string, show: number = 4): string => {
   if (str.length <= 8) {
     return str;
   }
-  const start = str.substring(0, 4);
-  const end = str.substring(str.length - 4);
+  const start = str.substring(0, show);
+  const end = str.substring(str.length - show);
   return `${start}...${end}`;
 };
 
