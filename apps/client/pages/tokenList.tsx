@@ -1,4 +1,6 @@
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { PageConfig, ContentConfig, TokenListItem } from "../constants/type";
 import sty from "../styles/tokenList.module.scss";
 import { CURRENT_TOKEN_LIST } from "../constants/tokenListJson";
@@ -6,9 +8,6 @@ import { CURRENT_TOKEN_LIST } from "../constants/tokenListJson";
 /** components */
 import PageLayout from "../components/PageLayout";
 import ContentLayout from "../components/ContentLayout";
-import { useEffect, useState } from "react";
-import { truncateAddress } from "../utils";
-import { useRouter } from "next/router";
 
 const pageConfig: PageConfig = {
   title: "Token List",
@@ -20,7 +19,7 @@ const contentConfig: ContentConfig = {
   back: "",
 };
 
-const tokenList: NextPage = () => {
+const TokenList: NextPage = () => {
   const router = useRouter();
   const [list, setList] = useState<TokenListItem[] | undefined>();
 
@@ -88,4 +87,4 @@ const tokenList: NextPage = () => {
   );
 };
 
-export default tokenList;
+export default TokenList;
