@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import { PageConfig, ContentConfig } from "../constants/type";
+import sty from "../styles/Home.module.scss";
 
 /** components */
 import PageLayout from "../components/PageLayout";
@@ -19,7 +20,22 @@ const Home: NextPage = () => {
   return (
     <PageLayout pageConfig={pageConfig}>
       <ContentLayout contentConfig={contentConfig}>
-        <div>HOME</div>
+        <div className={sty.Home}>
+          <div className={sty.contend}>
+            <p>💡 本项目实现了一款以固定USDT价格购买Token的平台。</p>
+            <p>
+              ⚖️ 卖家 可以使用所拥有的Token在平台上创建一个Pool, 自由设定USDT价格、售卖量及其他参数,
+              并支持灵活的Token投入和取回。同时, 卖家还可以设定最大售出量, 掌控不同阶段的价格策略,
+              以更好地管理销售流程。
+            </p>
+            <p>💸 买家 则可通过地址寻找Pool, 在平台上便捷地根据Pool价格使用USDT结算, 安心购买Token。</p>
+
+            <p>
+              📊 该平台为那些希望以固定价以售卖Token的卖家和发行Token的项目方提供了相应的解决方案,
+              实现了更加高效、迅速、可持续的Token交易。
+            </p>
+          </div>
+        </div>
       </ContentLayout>
     </PageLayout>
   );

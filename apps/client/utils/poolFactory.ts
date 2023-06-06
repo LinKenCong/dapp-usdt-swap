@@ -14,3 +14,16 @@ export const callFactoryGetPool = async (
   const poolAddress = await factory.getPool(args[0], args[1]);
   return poolAddress !== ethers.constants.AddressZero ? poolAddress : undefined;
 };
+
+export const sendFactoryCreatePool = async (ethersSigner: ethers.providers.JsonRpcSigner, args: [token: string]) => {
+  try {
+    const factory = getPoolFactory(ethersSigner, FACTORY);
+    await factory.estimateGas.createPool(args[0]);
+    const tx = await factory.createPool(args[0]);
+    const txRes = await tx.wait();
+    return txRes;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

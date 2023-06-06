@@ -1,0 +1,10 @@
+.Home {
+  .contend {
+    display: flex;
+    flex-direction: column;
+    > p {
+      margin-bottom: 1rem;
+      line-height: 1.8rem;
+    }
+  }
+}

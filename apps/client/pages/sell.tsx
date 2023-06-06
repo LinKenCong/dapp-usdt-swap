@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useAccount, usePrepareContractWrite, useContractWrite, useSigner } from "wagmi";
+import { useAccount, useSigner } from "wagmi";
 import { utils, ethers } from "ethers";
 import { PageConfig, ContentConfig, PoolInfo } from "../constants/type";
-import { CONTRACT_MAP } from "../constants/contracts";
 import commonSty from "../styles/common.module.scss";
 import sty from "../styles/Sell.module.scss";
-import { ABI_IUsdtSwapFactory, ABI_IUsdtSwapPool } from "../constants/abi";
 import { useEthersSigner } from "../hooks";
-import { callFactoryGetPool, getPoolInfo, formatPoolInfo } from "../utils";
+import { callFactoryGetPool, getPoolInfo, formatPoolInfo, sendFactoryCreatePool } from "../utils";
 
 /** components */
 import PageLayout from "../components/PageLayout";
@@ -69,20 +67,13 @@ const Sell: NextPage = () => {
     getPoolHandle();
   }, [tokenAddress]);
 
-  // createPool config
-  const createPoolConfig = usePrepareContractWrite({
-    address: utils.getAddress(CONTRACT_MAP.factory),
-    abi: ABI_IUsdtSwapFactory,
-    functionName: "createPool",
-    args: [utils.isAddress(tokenAddress) && utils.getAddress(tokenAddress)],
-    enabled: !poolAddress && utils.isAddress(tokenAddress),
-  });
-  const contractWrite = useContractWrite(createPoolConfig.config);
-
   // createPool func
   const createPool = async () => {
-    const create = await contractWrite?.writeAsync?.();
-    await create?.wait().then((res: any) => {
+    if (havePool || !ethersSigner || !utils.isAddress(tokenAddress)) {
+      setErrorTip("Status Error!");
+      return;
+    }
+    await sendFactoryCreatePool(ethersSigner, [utils.getAddress(tokenAddress)]).then((res: any) => {
       if (utils.isAddress(poolAddress) && poolAddress !== ethers.constants.AddressZero) {
         setHavePool(true);
         setErrorTip("");
@@ -131,12 +122,16 @@ const Sell: NextPage = () => {
               />
             )}
           </div>
-          <div className={sty.row}>
-            {tokenAddress && !havePool && <div className={commonSty.errorTip}>{errorTip}</div>}
-          </div>
-          <div className={sty.row}>
-            <BigButton label={havePool ? "Set Pool" : "Create Pool"} onClick={btnClick} />
-          </div>
+          {tokenAddress && (
+            <>
+              <div className={sty.row}>
+                {tokenAddress && !havePool && <div className={commonSty.errorTip}>{errorTip}</div>}
+              </div>
+              <div className={sty.row}>
+                <BigButton label={havePool ? "Set Pool" : "Create Pool"} onClick={btnClick} />
+              </div>
+            </>
+          )}
         </div>
       </ContentLayout>
     </PageLayout>
