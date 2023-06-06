@@ -1,8 +1,8 @@
 import { ContractMap } from "./type";
 
 const CONTRACT_MAP_BSC: ContractMap = {
-  usdt: "",
-  factory: "",
+  usdt: "0x55d398326f99059fF775485246999027B3197955",
+  factory: "0xc4A13887E7320b94524a0aA7C747f4FCa500b7fb",
 };
 
 const CONTRACT_MAP_LOCAL: ContractMap = {
