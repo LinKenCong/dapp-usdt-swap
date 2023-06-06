@@ -7,11 +7,17 @@
   flex-direction: column;
   background-color: #fff;
 }
+.logoPart {
+  margin-right: 1rem;
+}
 .websiteInfo {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 .userInfo {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
 }
