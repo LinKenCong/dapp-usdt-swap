@@ -4,8 +4,8 @@ const Footer = () => {
   return (
     <>
       <footer className={sty.Footer}>
-        <a href="#" rel="noopener noreferrer" target="_blank">
-          Made with ❤️ by your frens at 🌈
+        <a href="https://github.com/LinKenCong/dapp-usdt-swap" rel="noopener noreferrer" target="_blank">
+          The Website Is 🛠️ Designed By 🕶️ LinKenCong
         </a>
       </footer>
     </>

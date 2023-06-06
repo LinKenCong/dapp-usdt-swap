@@ -21,6 +21,10 @@
       font-weight: 600;
       text-align: center;
       text-decoration: underline;
+      background: linear-gradient(180deg, #ffc8dc 0%, #3e3ea8 100%);
+      background-blend-mode: normal;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
   }
 
